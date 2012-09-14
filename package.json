@@ -1,5 +1,5 @@
 {
-  "name": "node-proxy-protocol",
+  "name": "proxy-protocol",
   "description": "Parser for the HA Proxy/stud PROXY protocol",
   "author": "Rackspace Hosting",
   "keywords": [ "proxy", "proxy protocol", "HA proxy", "stud"],
