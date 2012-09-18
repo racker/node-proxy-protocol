@@ -28,11 +28,18 @@ var c = {
 };
 
 var states = ["NONE", "PROXY", "PROTO", "SRCA", "DSTA", "SRCP", "DSTP", "LF"];
+var parse_error = new Error('Failed to parse PROXY protocol');
 
-function parse(stream, cb) {
+
+function parse(stream, callback) {
   var state = 0;
   var space = {};
   var obj = {};
+
+  function parseError() {
+    obj = null;
+    callback(parse_error, null);
+  }
 
   function spaceStart(max) {
     space.buffer = '';
@@ -54,7 +61,7 @@ function parse(stream, cb) {
     return spaceStart(c.port.length);
   }
 
-  strtok.parse(stream, function(v, cb) {
+  strtok.parse(stream, function(v) {
     /* Buffer until we find a space */
     if (space.max > 0) {
       space.max--;
@@ -79,7 +86,7 @@ function parse(stream, cb) {
 
     /* Never found that space, bail */
     if (space.searching === true) {
-      obj = null;
+      parseError();
       return strtok.DONE;
     }
 
@@ -97,7 +104,7 @@ function parse(stream, cb) {
         state++;
         return new strtok.StringType(c.tcp4.length, 'utf-8');
       } else {
-        obj = null;
+        parseError();
         return strtok.DONE;
       }
       break;
@@ -108,7 +115,7 @@ function parse(stream, cb) {
         state++;
         obj.proto = v.slice(0, v.length - 1);
       } else {
-        obj = null;
+        parseError();
         return strtok.DONE;
       }
 
@@ -147,10 +154,10 @@ function parse(stream, cb) {
     case "LF":
       /* Protocol ends in \n */
       if (v !== '\n') {
-        obj = null;
+        parseError();
       }
 
-      stream.emit('proxy', obj);
+      callback(null, obj);
 
       return strtok.DONE;
 

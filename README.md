@@ -7,9 +7,8 @@ Parses the HA Proxy/stud proxy protocol line using strtok.
 ```
 var proxy_protocol = require("./");
 
-stream.on('proxy', function(obj) {
+proxy_protocol.parse(tcp4, function(err, obj) {
   console.log('Got proxy details');
   console.log(obj);
 });
-proxy_protocol.parse(tcp4);
 ```

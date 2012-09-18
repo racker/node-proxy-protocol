@@ -19,25 +19,27 @@ var proxy_protocol = require("./");
 var fs = require("fs");
 
 var tcp4 = fs.createReadStream("examples/tcp4.txt")
-tcp4.on('proxy', function(obj) {
+proxy_protocol.parse(tcp4, function(err, obj) {
   console.log(obj);
 });
-proxy_protocol.parse(tcp4);
 
 var tcp6 = fs.createReadStream("examples/tcp6.txt")
-tcp6.on('proxy', function(obj) {
+proxy_protocol.parse(tcp6, function(err, obj) {
   console.log(obj);
 });
-proxy_protocol.parse(tcp6);
 
 var unknown = fs.createReadStream("examples/unknown.txt")
-unknown.on('proxy', function(obj) {
-  console.log("ERROR");
+proxy_protocol.parse(unknown, function(err, obj) {
+  if (err !== null) {
+    console.log(err);
+    console.log("Error on unknown");
+  }
 });
-proxy_protocol.parse(unknown);
 
 var garbage = fs.createReadStream("examples/garbage.txt")
-garbage.on('proxy', function(obj) {
-  console.log("ERROR");
+proxy_protocol.parse(garbage, function(err, obj) {
+  if (err !== null) {
+    console.log(err);
+    console.log("Error on garbage");
+  }
 });
-proxy_protocol.parse(garbage);
