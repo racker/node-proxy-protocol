@@ -50,11 +50,7 @@ function parse(stream, callback) {
   }
 
   function ipSearchStart() {
-    if (obj.proto === "TCP6") {
-      return spaceStart(c.ip6.length);
-    } else {
-      return spaceStart(c.ip4.length);
-    }
+    return spaceStart(obj.proto === "TCP6" ? c.ip6.length : c.ip4.length);
   }
 
   function portSearchStart() {
