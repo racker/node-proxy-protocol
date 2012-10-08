@@ -43,3 +43,8 @@ proxy_protocol.parse(garbage, function(err, obj) {
     console.log("Error on garbage");
   }
 });
+
+var newline = fs.createReadStream("examples/tcp4-no-newline.txt")
+proxy_protocol.parse(newline, function(err, obj) {
+  console.log('ERROR: We should not be here this test is for a short stream');
+});
