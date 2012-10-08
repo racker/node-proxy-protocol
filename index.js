@@ -155,6 +155,7 @@ function parse(stream, callback) {
       /* Protocol ends in \n */
       if (v !== '\n') {
         parseError();
+        return strtok.DONE;
       }
 
       callback(null, obj);
