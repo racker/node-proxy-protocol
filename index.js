@@ -28,15 +28,14 @@ var c = {
 };
 
 var states = ["NONE", "PROXY", "PROTO", "SRCA", "DSTA", "SRCP", "DSTP", "LF"];
-var parse_error = new Error('Failed to parse PROXY protocol');
-
 
 function parse(stream, callback) {
   var state = 0;
   var space = {};
   var obj = {};
 
-  function parseError() {
+  function parseError(msg) {
+    var parse_error = new Error('Failed to parse PROXY protocol on state ' + state + ': ' + msg);
     obj = null;
     callback(parse_error, null);
   }
@@ -86,7 +85,7 @@ function parse(stream, callback) {
 
     /* Never found that space, bail */
     if (space.searching === true) {
-      parseError();
+      parseError('could not find the space');
       return strtok.DONE;
     }
 
@@ -104,7 +103,7 @@ function parse(stream, callback) {
         state++;
         return new strtok.StringType(c.tcp4.length, 'utf-8');
       } else {
-        parseError();
+        parseError('no PROXY token found');
         return strtok.DONE;
       }
       break;
@@ -115,7 +114,7 @@ function parse(stream, callback) {
         state++;
         obj.proto = v.slice(0, v.length - 1);
       } else {
-        parseError();
+        parseError('no TCP4 or TCP6 token found');
         return strtok.DONE;
       }
 
@@ -154,7 +153,7 @@ function parse(stream, callback) {
     case "LF":
       /* Protocol ends in \n */
       if (v !== '\n') {
-        parseError();
+        parseError('no newline found');
         return strtok.DONE;
       }
 
