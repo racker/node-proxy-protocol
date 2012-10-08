@@ -24,7 +24,7 @@ var c = {
   "unknown": "UNKNOW",
   "port": "65535 ",
   "ip4": "255.255.255.255 ",
-  "ip6": "2001:0db8:85a3:0042:0000:8a2e:0370:73 ",
+  "ip6": "2001:0db8:85a3:0042:0000:8a2e:0370:7356 ",
 };
 
 var states = ["NONE", "PROXY", "PROTO", "SRCA", "DSTA", "SRCP", "DSTP", "LF"];
